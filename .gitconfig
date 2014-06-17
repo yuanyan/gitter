@@ -100,6 +100,13 @@
     fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"     # Find commits by commit message
 
     # Credit an author on the latest commit
+    # 
+    # $1 - The full name of the author.
+    # $2 - The email address of the author.
+    #
+    # Examples
+    #
+    #   git credit "Yuanyan Cao" yuanyan.cao@gmail.com
     credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
     # Find out who is currently active on the repository
     # Displays committers in descending order of number of commits
