@@ -1,0 +1,167 @@
+[alias]
+    # add
+    a = add                           # add
+    chunkyadd = add --patch           # stage commits chunk by chunk
+
+    # via http://blog.apiaxle.com/post/handy-git-tips-to-stop-you-getting-fired/
+    snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+    snapshots = !git stash list --grep snapshot
+
+    #via http://stackoverflow.com/questions/5188320/how-can-i-get-a-list-of-git-branches-ordered-by-most-recent-commit
+    recent-branches = !git for-each-ref --count=5 --sort=-committerdate refs/heads/ --format='%(refname:short)'
+
+    # branch
+    b = branch -v                     # branch (verbose)
+    br = branch
+    branches = branch -a
+
+    # commit
+    c = commit -m                     # commit with message
+    ca = commit -am                   # commit all with message
+    ci = commit                       # commit
+    amend = commit --amend            # ammend your last commit
+    ammend = commit --amend           # ammend your last commit
+
+    # checkout
+    co = checkout                     # checkout
+    nb = checkout -b                  # create and switch to a new branch (mnemonic: "git new branch branchname...")
+    go = checkout -B                  # switch to a branch, creating it if necessary
+
+    # clone
+    cl = clone                        # clone a repository
+    cr = clone --recursive            # clone a repository including all submodules
+
+    # cherry-pick
+    cp = cherry-pick -x               # grab a change from a branch
+
+    # diff
+
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"   # Show the diff between the latest commit and the current state
+    df = diff                         # diff unstaged changes
+    dc = diff --cached                # diff staged changes
+    ds = diff --staged
+    last = diff HEAD^                 # diff last committed change
+    di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"   # `git di $number` shows the diff between the state `$number` revisions ago and the current state
+
+    # log
+    l = log --graph --date=short
+    lo = log --graph --decorate --pretty=oneline --abbrev-commit
+    loa = log --graph --decorate --pretty=oneline --abbrev-commit --all --date=local
+    changes = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\" --name-status
+    short = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\"    # short
+    simple = log --pretty=format:\" * %s\"                         # simple
+    shortnocolor = log --pretty=format:\"%h %cr %cn %s\"           # short no color
+
+    # pull
+    pl = pull                         # pull
+    pa = !"git pull; git submodule foreach git pull origin master"  # Pull in remote changes for the current repository and all its submodules
+
+    # push
+    ps = push                         # push
+
+    # rebase
+    rc = rebase --continue            # continue rebase
+    rs = rebase --skip                # skip rebase
+    reb = "!r() { git rebase -i HEAD~$1; }; r"      # Interactive rebase with the given number of latest commits
+
+    # remote
+    r = remote -v                     # show remotes (verbose)
+    remotes = remote -v
+
+    # reset
+    unstage = reset HEAD              # remove files from index (tracking)
+    uncommit = reset --soft HEAD^     # go back before last commit, with files in uncommitted state
+    filelog = log -u                  # show changes to a file
+    mt = mergetool                    # fire up the merge tool
+
+    # stash
+    ss = stash                        # stash changes
+    sl = stash list                   # list stashes
+    sa = stash apply                  # apply stash (restore changes)
+    sd = stash drop                   # drop stashes (destory changes)
+
+    # status
+    s = status -s                     # View the current working tree status using the short format
+    st = status                       # status
+    stat = status                     # status
+
+    # tag
+    t = tag -n                        # show tags with <n> lines of each tag message
+    tags = tag -l                     # show tags (verbose)
+
+    # list
+    ls = ls-files
+    ign = ls-files -o -i --exclude-standard      # Show files ignored by git
+    
+    # find
+    fb = "!f() { git branch -a --contains $1; }; f"             # Find branches containing commit
+    ft = "!f() { git describe --always --contains $1; }; f"     # Find tags containing commit
+    fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"          # Find commits by source code
+    fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"     # Find commits by commit message
+
+    # Credit an author on the latest commit
+    credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+
+    # Remove branches that have already been merged with master
+    dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d
+    
+    # svn helpers
+    svnr = svn rebase
+    svnd = svn dcommit
+    svnl = svn log --oneline --show-commit
+
+[apply]
+    # Detect whitespace errors when applying a patch
+    whitespace = fix
+
+[core]
+    # Use custom `.gitignore` and `.gitattributes`
+    excludesfile = ~/.gitignore
+    attributesfile = ~/.gitattributes
+    # Treat spaces before tabs, lines that are indented with 8 or more spaces, and
+    # all kinds of trailing whitespace as an error.
+    # [default] trailing-space: looks for spaces at the end of a line
+    # [default] space-before-tab: looks for spaces before tabs at the beginning of
+    # a line
+    whitespace = space-before-tab,indent-with-non-tab,trailing-space
+    # Make `git rebase` safer on OS X
+    # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+    trustctime = false
+
+[color]
+    # Use colors in Git commands that are capable of colored output when
+    # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+    ui = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+# URL shorthands
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+    insteadOf = "github:"
+[url "git@gist.github.com:"]
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+    insteadOf = "gist:"
+
+[push]
+    default = matching
