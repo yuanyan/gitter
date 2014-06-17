@@ -14,6 +14,8 @@
     b = branch -v                     # branch (verbose)
     br = branch
     branches = branch -a
+	db = branch -D                 	  # delete a local branch
+	dbr = !sh -c 'git push origin :$0'   	# delete a remote branch
 
     # commit
     c = commit -m                     # commit with message
